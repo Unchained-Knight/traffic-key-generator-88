@@ -173,8 +173,8 @@ async function getTrafficStats() {
                   method="GET"
                   endpoint="/v1/metrics"
                   description="Retrieve traffic metrics for your application"
-                  example="curl https://api.trafficmanager.com/v1/metrics \
-  -H 'Authorization: Bearer sk_test_xyz789'"
+                  example={`curl https://api.trafficmanager.com/v1/metrics \\
+  -H 'Authorization: Bearer sk_test_xyz789'`}
                   onCopy={() => copyCode('metrics-example', `curl https://api.trafficmanager.com/v1/metrics \\
   -H 'Authorization: Bearer sk_test_xyz789'`)}
                   isCopied={copiedSnippets['metrics-example']}
@@ -184,8 +184,8 @@ async function getTrafficStats() {
                   method="GET"
                   endpoint="/v1/metrics/realtime"
                   description="Get real-time traffic metrics with second-by-second updates"
-                  example="curl https://api.trafficmanager.com/v1/metrics/realtime \
-  -H 'Authorization: Bearer sk_test_xyz789'"
+                  example={`curl https://api.trafficmanager.com/v1/metrics/realtime \\
+  -H 'Authorization: Bearer sk_test_xyz789'`}
                   onCopy={() => copyCode('realtime-example', `curl https://api.trafficmanager.com/v1/metrics/realtime \\
   -H 'Authorization: Bearer sk_test_xyz789'`)}
                   isCopied={copiedSnippets['realtime-example']}
@@ -199,8 +199,8 @@ async function getTrafficStats() {
                   method="GET"
                   endpoint="/v1/rate-limits"
                   description="Retrieve current rate limit configuration"
-                  example="curl https://api.trafficmanager.com/v1/rate-limits \
-  -H 'Authorization: Bearer sk_test_xyz789'"
+                  example={`curl https://api.trafficmanager.com/v1/rate-limits \\
+  -H 'Authorization: Bearer sk_test_xyz789'`}
                   onCopy={() => copyCode('rate-limits-example', `curl https://api.trafficmanager.com/v1/rate-limits \\
   -H 'Authorization: Bearer sk_test_xyz789'`)}
                   isCopied={copiedSnippets['rate-limits-example']}
@@ -210,14 +210,14 @@ async function getTrafficStats() {
                   method="POST"
                   endpoint="/v1/rate-limits"
                   description="Update rate limit configuration"
-                  example="curl -X POST https://api.trafficmanager.com/v1/rate-limits \
-  -H 'Authorization: Bearer sk_test_xyz789' \
-  -H 'Content-Type: application/json' \
+                  example={`curl -X POST https://api.trafficmanager.com/v1/rate-limits \\
+  -H 'Authorization: Bearer sk_test_xyz789' \\
+  -H 'Content-Type: application/json' \\
   -d '{
-    \"global_limit\": 10000,
-    \"per_ip_limit\": 100,
-    \"timeframe\": \"minute\"
-  }'"
+    "global_limit": 10000,
+    "per_ip_limit": 100,
+    "timeframe": "minute"
+  }'`}
                   onCopy={() => copyCode('update-limits-example', `curl -X POST https://api.trafficmanager.com/v1/rate-limits \\
   -H 'Authorization: Bearer sk_test_xyz789' \\
   -H 'Content-Type: application/json' \\
@@ -237,8 +237,8 @@ async function getTrafficStats() {
                   method="GET"
                   endpoint="/v1/rules"
                   description="List all traffic rules"
-                  example="curl https://api.trafficmanager.com/v1/rules \
-  -H 'Authorization: Bearer sk_test_xyz789'"
+                  example={`curl https://api.trafficmanager.com/v1/rules \\
+  -H 'Authorization: Bearer sk_test_xyz789'`}
                   onCopy={() => copyCode('rules-example', `curl https://api.trafficmanager.com/v1/rules \\
   -H 'Authorization: Bearer sk_test_xyz789'`)}
                   isCopied={copiedSnippets['rules-example']}
@@ -248,19 +248,19 @@ async function getTrafficStats() {
                   method="POST"
                   endpoint="/v1/rules"
                   description="Create a new traffic rule"
-                  example="curl -X POST https://api.trafficmanager.com/v1/rules \
-  -H 'Authorization: Bearer sk_test_xyz789' \
-  -H 'Content-Type: application/json' \
+                  example={`curl -X POST https://api.trafficmanager.com/v1/rules \\
+  -H 'Authorization: Bearer sk_test_xyz789' \\
+  -H 'Content-Type: application/json' \\
   -d '{
-    \"name\": \"Block Suspicious IPs\",
-    \"conditions\": [{
-      \"type\": \"ip_address\",
-      \"operator\": \"in\",
-      \"value\": [\"192.168.1.1\", \"10.0.0.1\"]
+    "name": "Block Suspicious IPs",
+    "conditions": [{
+      "type": "ip_address",
+      "operator": "in",
+      "value": ["192.168.1.1", "10.0.0.1"]
     }],
-    \"action\": \"block\",
-    \"priority\": 1
-  }'"
+    "action": "block",
+    "priority": 1
+  }'`}
                   onCopy={() => copyCode('create-rule-example', `curl -X POST https://api.trafficmanager.com/v1/rules \\
   -H 'Authorization: Bearer sk_test_xyz789' \\
   -H 'Content-Type: application/json' \\
@@ -331,9 +331,17 @@ async function getTrafficStats() {
                 
                 <SdkCard
                   language="Java"
-                  installCommand="<dependency>\n  <groupId>com.trafficmanager</groupId>\n  <artifactId>sdk</artifactId>\n  <version>1.0.0</version>\n</dependency>"
+                  installCommand={`<dependency>
+  <groupId>com.trafficmanager</groupId>
+  <artifactId>sdk</artifactId>
+  <version>1.0.0</version>
+</dependency>`}
                   docsUrl="#/docs/java"
-                  onCopy={() => copyCode('java-install', '<dependency>\n  <groupId>com.trafficmanager</groupId>\n  <artifactId>sdk</artifactId>\n  <version>1.0.0</version>\n</dependency>')}
+                  onCopy={() => copyCode('java-install', `<dependency>
+  <groupId>com.trafficmanager</groupId>
+  <artifactId>sdk</artifactId>
+  <version>1.0.0</version>
+</dependency>`)}
                   isCopied={copiedSnippets['java-install']}
                 />
               </div>
