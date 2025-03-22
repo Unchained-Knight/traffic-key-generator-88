@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Navbar from '@/components/Navbar';
+import CustomNavbar from '@/components/CustomNavbar';
 import ApiGenerator from '@/components/ApiGenerator';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { FileText } from 'lucide-react';
 const GeneratorPage = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <CustomNavbar />
       <main className="flex-grow pt-24 pb-20">
         <div className="container px-4 sm:px-6">
           <div className="max-w-4xl mx-auto text-center mb-12">
