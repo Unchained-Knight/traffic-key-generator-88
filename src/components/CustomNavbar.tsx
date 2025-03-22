@@ -31,6 +31,13 @@ const CustomNavbar = () => {
             <Link to="/simulator">Simulator</Link>
           </Button>
           <Button 
+            variant={location.pathname === "/green-light" ? "default" : "ghost"}
+            size="sm" 
+            asChild
+          >
+            <Link to="/green-light">Green Light</Link>
+          </Button>
+          <Button 
             variant={location.pathname === "/docs" ? "default" : "ghost"}
             size="sm" 
             asChild
