@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				traffic: {
+					'50': '#f5f7fa',
+					'100': '#ebeef3',
+					'200': '#d2dbe6',
+					'300': '#aebdd1',
+					'400': '#859ab8',
+					'500': '#667ca1',
+					'600': '#516385',
+					'700': '#43526e',
+					'800': '#39465d',
+					'900': '#333d4f',
+					'950': '#222733',
 				}
 			},
 			borderRadius: {
@@ -84,11 +98,36 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					'0%': { opacity: '0' },
+					'100%': { opacity: '1' }
+				},
+				'fade-up': {
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'fade-down': {
+					'0%': { opacity: '0', transform: 'translateY(-20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'pulse-soft': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' }
+				},
+				'blur-in': {
+					'0%': { filter: 'blur(12px)', opacity: '0' },
+					'100%': { filter: 'blur(0)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.7s ease-out',
+				'fade-up': 'fade-up 0.7s ease-out',
+				'fade-down': 'fade-down 0.7s ease-out',
+				'pulse-soft': 'pulse-soft 3s infinite ease-in-out',
+				'blur-in': 'blur-in 0.7s ease-out'
 			}
 		}
 	},

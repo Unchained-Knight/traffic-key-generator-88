@@ -1,12 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import Navbar from '@/components/Navbar';
+import HeroSection from '@/components/HeroSection';
+import Features from '@/components/Features';
+import ApiGenerator from '@/components/ApiGenerator';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow">
+        <HeroSection />
+        <Features />
+        <section className="py-20 bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 relative">
+          <div className="container px-4 sm:px-6 relative">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Ready to get started?
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Generate your API key now and start managing your traffic in minutes.
+              </p>
+            </div>
+            <ApiGenerator />
+          </div>
+        </section>
+      </main>
+      <Footer />
     </div>
   );
 };
