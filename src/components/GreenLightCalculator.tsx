@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trash, Upload } from 'lucide-react';
+import { Trash, Upload, RefreshCw } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
 const GreenLightCalculator = () => {
@@ -171,80 +171,92 @@ const GreenLightCalculator = () => {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <label htmlFor="apiUrl" className="block mb-2 font-medium">
-          Server URL:
-        </label>
-        <Input 
-          id="apiUrl" 
-          value={apiUrl} 
-          onChange={handleApiUrlChange} 
-          placeholder="Enter your ngrok URL here"
-          className="w-full"
-        />
-        <p className="mt-1 text-sm text-muted-foreground">
-          Enter the URL provided by ngrok when you start your Flask server
-        </p>
-      </div>
-
-      {/* Image Upload Form */}
-      <form onSubmit={handleSubmit}>
-        <div className="p-6 mb-6 border-2 border-dashed rounded-lg bg-background/50">
-          <h3 className="mb-3 text-lg font-medium">Upload Intersection Images</h3>
-          <p className="mb-4 text-muted-foreground">
-            Select 4 images of traffic at different intersection approaches
+      <Card className="p-6 border border-gray-100 bg-white shadow-sm mb-8">
+        <div className="mb-6">
+          <label htmlFor="apiUrl" className="block mb-2 font-medium text-gray-700">
+            Server URL
+          </label>
+          <Input 
+            id="apiUrl" 
+            value={apiUrl} 
+            onChange={handleApiUrlChange} 
+            placeholder="Enter your ngrok URL here"
+            className="w-full bg-gray-50 border-gray-200"
+          />
+          <p className="mt-1 text-sm text-muted-foreground">
+            Enter the URL provided by ngrok when you start your Flask server
           </p>
-
-          <div className="mb-6">
-            <Input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mb-4"
-            />
-          </div>
-
-          {/* Image Previews with Canvas */}
-          {images.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
-              {images.map((src, index) => (
-                <div key={index} className="relative">
-                  <div className="absolute top-2 left-2 px-2 py-1 text-xs font-medium bg-black/70 text-white rounded-full">
-                    Lane {index + 1}
-                  </div>
-                  <div className="overflow-hidden border rounded-lg">
-                    <canvas 
-                      ref={el => canvasRefs.current[index] = el}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex gap-3">
-            <Button 
-              type="submit" 
-              disabled={isLoading || imageFiles.length !== 4}
-              className="flex-1"
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              {isLoading ? 'Processing...' : 'Calculate Green Light Timings'}
-            </Button>
-
-            <Button 
-              type="button" 
-              onClick={handleReset}
-              variant="destructive"
-            >
-              <Trash className="w-4 h-4 mr-2" />
-              Reset
-            </Button>
-          </div>
         </div>
-      </form>
+
+        {/* Image Upload Form */}
+        <form onSubmit={handleSubmit}>
+          <div className="p-6 mb-6 border-2 border-dashed rounded-lg border-gray-200 bg-gray-50/50">
+            <h3 className="mb-3 text-lg font-medium text-gray-800">Upload Intersection Images</h3>
+            <p className="mb-4 text-muted-foreground">
+              Select 4 images of traffic at different intersection approaches
+            </p>
+
+            <div className="mb-6">
+              <Input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mb-4 bg-white border-gray-200"
+              />
+            </div>
+
+            {/* Image Previews with Canvas */}
+            {images.length > 0 && (
+              <div className="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
+                {images.map((src, index) => (
+                  <div key={index} className="relative">
+                    <div className="absolute top-2 left-2 px-2 py-1 text-xs font-medium bg-white/90 text-gray-700 rounded-full shadow-sm">
+                      Lane {index + 1}
+                    </div>
+                    <div className="overflow-hidden border rounded-lg border-gray-200 bg-white shadow-sm">
+                      <canvas 
+                        ref={el => canvasRefs.current[index] = el}
+                        className="w-full h-auto"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Button 
+                type="submit" 
+                disabled={isLoading || imageFiles.length !== 4}
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                {isLoading ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    Calculate Green Light Timings
+                  </>
+                )}
+              </Button>
+
+              <Button 
+                type="button" 
+                onClick={handleReset}
+                variant="outline"
+                className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700"
+              >
+                <Trash className="w-4 h-4 mr-2" />
+                Reset
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Card>
 
       {/* Error Message */}
       {error && (
@@ -256,51 +268,53 @@ const GreenLightCalculator = () => {
 
       {/* Success Message */}
       {success && (
-        <Alert className="mb-6 border-green-200 text-green-800 bg-green-50 dark:bg-green-900/20 dark:text-green-300 dark:border-green-900/30">
+        <Alert className="mb-6 border-green-100 text-green-800 bg-green-50">
           <AlertTitle>Success!</AlertTitle>
           <AlertDescription>Green light timings calculated.</AlertDescription>
         </Alert>
       )}
 
       {/* Green Light Display */}
-      <Card className="mt-8">
-        <CardContent className="pt-6">
-          <h2 className="mb-6 text-2xl font-bold text-center">
-            Optimal Green Light Timings
-          </h2>
+      {success && (
+        <Card className="mt-8 border border-gray-100 bg-white shadow-sm overflow-hidden">
+          <CardContent className="pt-6">
+            <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
+              Optimal Green Light Timings
+            </h2>
 
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {greenTimes.map((time, index) => (
-              <div key={index} className="p-4 bg-white border rounded-lg shadow-sm dark:bg-gray-800">
-                <div className="mb-2 text-lg font-medium text-center">
-                  Lane {index + 1}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {greenTimes.map((time, index) => (
+                <div key={index} className="p-4 bg-white border rounded-lg shadow-sm border-gray-100">
+                  <div className="mb-3 text-lg font-medium text-center text-gray-700">
+                    Lane {index + 1}
+                  </div>
+
+                  {/* Traffic Light */}
+                  <div className={`
+                    w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold
+                    ${time > 0 ? 'bg-green-500' : 'bg-red-500'} 
+                    border-4 border-gray-200 shadow-md
+                  `}>
+                    {time}s
+                  </div>
+
+                  <div className="flex justify-between p-2 text-sm bg-gray-50 rounded border border-gray-100">
+                    <span className="text-gray-600">Vehicles:</span>
+                    <span className="font-bold text-gray-800">{vehicleData[index]?.count || 0}</span>
+                  </div>
                 </div>
+              ))}
+            </div>
 
-                {/* Traffic Light */}
-                <div className={`
-                  w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold text-xl
-                  ${time > 0 ? 'bg-green-500' : 'bg-red-500'} 
-                  border-4 border-gray-700 shadow-md
-                `}>
-                  {time}s
-                </div>
-
-                <div className="flex justify-between p-2 text-sm bg-gray-100 rounded dark:bg-gray-700">
-                  <span>Vehicles:</span>
-                  <span className="font-bold">{vehicleData[index]?.count || 0}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 text-sm text-center text-muted-foreground">
-            <p>
-              Green light timings are calculated based on the number of vehicles detected.
-              Each vehicle adds 5 seconds to the base time (minimum 15s, maximum 60s).
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="mt-6 text-sm text-center text-muted-foreground">
+              <p>
+                Green light timings are calculated based on the number of vehicles detected.
+                Each vehicle adds 5 seconds to the base time (minimum 15s, maximum 60s).
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
