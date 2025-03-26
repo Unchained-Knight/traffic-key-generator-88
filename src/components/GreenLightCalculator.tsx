@@ -1,14 +1,17 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trash, Upload, RefreshCw } from 'lucide-react';
+import { Trash, Upload, RefreshCw, Lock } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 
-const GreenLightCalculator = () => {
+interface GreenLightCalculatorProps {
+  isAdmin: boolean;
+}
+
+const GreenLightCalculator = ({ isAdmin }: GreenLightCalculatorProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [greenTimes, setGreenTimes] = useState<number[]>([0, 0, 0, 0]);
@@ -20,7 +23,6 @@ const GreenLightCalculator = () => {
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
   const { toast } = useToast();
 
-  // Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     
@@ -42,26 +44,31 @@ const GreenLightCalculator = () => {
 
     setImageFiles(selectedFiles);
 
-    // Create preview URLs for displaying the images
     const imagePreviews = selectedFiles.map(file => URL.createObjectURL(file));
     setImages(imagePreviews);
   };
 
-  // Clean up object URLs on unmount
   useEffect(() => {
     return () => {
       images.forEach(imageUrl => URL.revokeObjectURL(imageUrl));
     };
   }, [images]);
 
-  // Handle API URL change
   const handleApiUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setApiUrl(e.target.value);
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!isAdmin) {
+      toast({
+        variant: "destructive",
+        title: "Permission Denied",
+        description: "You need administrator privileges to modify data.",
+      });
+      return;
+    }
 
     if (imageFiles.length !== 4) {
       setError('Please select exactly 4 images.');
@@ -77,7 +84,6 @@ const GreenLightCalculator = () => {
     setError(null);
     setSuccess(false);
 
-    // Create FormData object
     const formData = new FormData();
     imageFiles.forEach(file => {
       formData.append('images', file);
@@ -86,18 +92,16 @@ const GreenLightCalculator = () => {
     try {
       console.log(`Sending request to: ${apiUrl}`);
 
-      // Make POST request to Flask server
       const response = await axios.post(
         apiUrl,
         formData,
         {
-          timeout: 120000, // 2 minute timeout for image processing
+          timeout: 120000,
         }
       );
 
       console.log('Server Response:', response.data);
 
-      // Check if response has the expected data
       if (response.data && 
           Array.isArray(response.data.green_light_times) && 
           Array.isArray(response.data.vehicle_data)) {
@@ -125,7 +129,6 @@ const GreenLightCalculator = () => {
     }
   };
 
-  // Draw images with bounding boxes
   useEffect(() => {
     if (images.length === 4 && vehicleData.length === 4) {
       images.forEach((src, index) => {
@@ -136,12 +139,9 @@ const GreenLightCalculator = () => {
         
         const img = new Image();
         img.onload = () => {
-          // Set canvas size to match image
           canvas.width = img.width;
           canvas.height = img.height;
-          // Draw image
           ctx.drawImage(img, 0, 0);
-          // Draw bounding boxes
           if (vehicleData[index] && vehicleData[index].vehicles) {
             vehicleData[index].vehicles.forEach((vehicle: any) => {
               const [x1, y1, x2, y2] = vehicle.bbox;
@@ -159,8 +159,16 @@ const GreenLightCalculator = () => {
     }
   }, [images, vehicleData]);
 
-  // Clear all data
   const handleReset = () => {
+    if (!isAdmin) {
+      toast({
+        variant: "destructive",
+        title: "Permission Denied",
+        description: "You need administrator privileges to reset data.",
+      });
+      return;
+    }
+
     setImages([]);
     setImageFiles([]);
     setGreenTimes([0, 0, 0, 0]);
@@ -182,18 +190,31 @@ const GreenLightCalculator = () => {
             onChange={handleApiUrlChange} 
             placeholder="Enter your ngrok URL here"
             className="w-full bg-gray-50 border-gray-200"
+            disabled={!isAdmin}
           />
           <p className="mt-1 text-sm text-muted-foreground">
-            Enter the URL provided by ngrok when you start your Flask server
+            {isAdmin 
+              ? "Enter the URL provided by ngrok when you start your Flask server" 
+              : "Only administrators can change the server URL"}
           </p>
         </div>
 
-        {/* Image Upload Form */}
         <form onSubmit={handleSubmit}>
-          <div className="p-6 mb-6 border-2 border-dashed rounded-lg border-gray-200 bg-gray-50/50">
-            <h3 className="mb-3 text-lg font-medium text-gray-800">Upload Intersection Images</h3>
+          <div className={`p-6 mb-6 border-2 border-dashed rounded-lg border-gray-200 bg-gray-50/50 ${!isAdmin ? 'opacity-75' : ''}`}>
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-medium text-gray-800">Upload Intersection Images</h3>
+              {!isAdmin && (
+                <div className="flex items-center text-sm text-amber-600 bg-amber-50 px-2 py-1 rounded">
+                  <Lock className="h-3 w-3 mr-1" />
+                  View only
+                </div>
+              )}
+            </div>
+            
             <p className="mb-4 text-muted-foreground">
-              Select 4 images of traffic at different intersection approaches
+              {isAdmin 
+                ? "Select 4 images of traffic at different intersection approaches" 
+                : "Only administrators can upload and process new images"}
             </p>
 
             <div className="mb-6">
@@ -203,10 +224,10 @@ const GreenLightCalculator = () => {
                 accept="image/*"
                 onChange={handleImageChange}
                 className="mb-4 bg-white border-gray-200"
+                disabled={!isAdmin}
               />
             </div>
 
-            {/* Image Previews with Canvas */}
             {images.length > 0 && (
               <div className="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
                 {images.map((src, index) => (
@@ -228,7 +249,7 @@ const GreenLightCalculator = () => {
             <div className="flex gap-3">
               <Button 
                 type="submit" 
-                disabled={isLoading || imageFiles.length !== 4}
+                disabled={isLoading || imageFiles.length !== 4 || !isAdmin}
                 className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
               >
                 {isLoading ? (
@@ -249,16 +270,22 @@ const GreenLightCalculator = () => {
                 onClick={handleReset}
                 variant="outline"
                 className="bg-white border-gray-200 hover:bg-gray-50 text-gray-700"
+                disabled={!isAdmin}
               >
                 <Trash className="w-4 h-4 mr-2" />
                 Reset
               </Button>
             </div>
+
+            {!isAdmin && (
+              <div className="mt-4 text-sm text-center text-muted-foreground">
+                Please contact an administrator if you need to upload new traffic data.
+              </div>
+            )}
           </div>
         </form>
       </Card>
 
-      {/* Error Message */}
       {error && (
         <Alert variant="destructive" className="mb-6">
           <AlertTitle>Error</AlertTitle>
@@ -266,7 +293,6 @@ const GreenLightCalculator = () => {
         </Alert>
       )}
 
-      {/* Success Message */}
       {success && (
         <Alert className="mb-6 border-green-100 text-green-800 bg-green-50">
           <AlertTitle>Success!</AlertTitle>
@@ -274,7 +300,6 @@ const GreenLightCalculator = () => {
         </Alert>
       )}
 
-      {/* Green Light Display */}
       {success && (
         <Card className="mt-8 border border-gray-100 bg-white shadow-sm overflow-hidden">
           <CardContent className="pt-6">
@@ -289,7 +314,6 @@ const GreenLightCalculator = () => {
                     Lane {index + 1}
                   </div>
 
-                  {/* Traffic Light */}
                   <div className={`
                     w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-white font-bold
                     ${time > 0 ? 'bg-green-500' : 'bg-red-500'} 

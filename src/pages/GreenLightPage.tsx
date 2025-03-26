@@ -3,11 +3,15 @@ import React from 'react';
 import CustomNavbar from '@/components/CustomNavbar';
 import Footer from '@/components/Footer';
 import GreenLightCalculator from '@/components/GreenLightCalculator';
+import LoginForm from '@/components/LoginForm';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { FileText, BarChart } from 'lucide-react';
+import { FileText, BarChart, LogOut } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 const GreenLightPage = () => {
+  const { user, logout, isAdmin } = useUser();
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f8f9fa]">
       <CustomNavbar />
@@ -18,6 +22,46 @@ const GreenLightPage = () => {
             <p className="text-xl text-muted-foreground mx-auto max-w-2xl mb-8">
               Calculate optimal green light timings based on detected vehicles at intersections.
             </p>
+            
+            {user && (
+              <>
+                <div className="flex justify-center items-center mb-6">
+                  <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                    <div className={`px-2 py-1 rounded text-xs font-medium ${
+                      isAdmin ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {isAdmin ? 'Administrator' : 'Viewer'}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={logout}
+                      className="ml-2"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+                
+                {isAdmin && (
+                  <p className="text-sm bg-blue-50 text-blue-800 p-2 rounded mb-6">
+                    As an administrator, you have full access to modify traffic data.
+                  </p>
+                )}
+                
+                {!isAdmin && (
+                  <p className="text-sm bg-gray-50 text-gray-800 p-2 rounded mb-6">
+                    As a viewer, you can view traffic data but cannot modify it.
+                  </p>
+                )}
+              </>
+            )}
+            
             <div className="flex justify-center gap-4">
               <Button asChild variant="outline" className="bg-white hover:bg-gray-50">
                 <Link to="/simulator">
@@ -34,7 +78,13 @@ const GreenLightPage = () => {
             </div>
           </div>
           
-          <GreenLightCalculator />
+          {!user ? (
+            <div className="max-w-md mx-auto">
+              <LoginForm />
+            </div>
+          ) : (
+            <GreenLightCalculator isAdmin={isAdmin} />
+          )}
         </div>
       </main>
       <Footer />
