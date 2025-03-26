@@ -1,6 +1,4 @@
 
-import { supabase, isUserAdmin } from './supabaseClient';
-
 // Define user roles
 export type UserRole = 'admin' | 'viewer';
 
@@ -64,36 +62,19 @@ export const mockUsers: User[] = [
   }
 ];
 
-// Function to login with email using Supabase
-export const loginWithEmail = async (email: string, password: string): Promise<User | null> => {
-  try {
-    // For the demo, we'll still use mock data to avoid requiring Supabase auth setup
-    // In a real app, you would use: await supabase.auth.signInWithPassword({ email, password })
-    const mockUser = mockUsers.find(u => u.email === email);
-    
-    if (mockUser) {
-      // Simulate checking admin status with Supabase
-      // In a real app, this would be determined by RLS policies or a role check
-      const isAdminStatus = mockUser.role === 'admin';
-      
-      const user: User = {
-        ...mockUser,
-        role: isAdminStatus ? 'admin' : 'viewer'
-      };
-      
-      setCurrentUser(user);
-      return user;
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Login error:', error);
-    return null;
+// Function to login with email
+export const loginWithEmail = (email: string, password: string): User | null => {
+  // In a real app, this would validate credentials against your database
+  // This is just a mock implementation
+  const user = mockUsers.find(u => u.email === email);
+  if (user) {
+    setCurrentUser(user);
+    return user;
   }
+  return null;
 };
 
 // Function to logout
-export const logout = async () => {
-  // In a real app, you would use: await supabase.auth.signOut()
+export const logout = () => {
   setCurrentUser(null);
 };
