@@ -1,64 +1,65 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import CustomNavbar from '@/components/CustomNavbar';
 import Footer from '@/components/Footer';
 import GreenLightCalculator from '@/components/GreenLightCalculator';
+import LoginForm from '@/components/LoginForm';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { FileText, BarChart, Info } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { FileText, BarChart, LogOut } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 const GreenLightPage = () => {
-  const [flaskUrl, setFlaskUrl] = useState<string | null>(null);
-  
-  // Extract the ngrok URL from the console output
-  const extractNgrokUrl = (text: string) => {
-    const match = text.match(/Public URL: (https:\/\/[a-z0-9\-]+\.ngrok(?:-free)?\.(?:app|io))/i);
-    if (match && match[1]) {
-      setFlaskUrl(match[1]);
-      return match[1];
-    }
-    return null;
-  };
+  const { user, logout, isAdmin } = useUser();
 
-  // Handle pasting the console output
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      const url = extractNgrokUrl(text);
-      if (!url) {
-        alert("Couldn't find an ngrok URL in the pasted text. Please make sure you copied the entire console output that includes 'Public URL: https://...'");
-      }
-    } catch (err) {
-      alert("Unable to access clipboard. Please enter the ngrok URL manually.");
-    }
-  };
-  
   return (
     <div className="min-h-screen flex flex-col bg-[#f8f9fa]">
       <CustomNavbar />
       <main className="flex-grow pt-24 pb-20">
         <div className="container px-4 sm:px-6">
-          <div className="max-w-4xl mx-auto text-center mb-8">
+          <div className="max-w-4xl mx-auto text-center mb-14">
             <h1 className="text-4xl font-bold mb-4 text-gray-800">Smart Green Light Calculator</h1>
             <p className="text-xl text-muted-foreground mx-auto max-w-2xl mb-8">
               Calculate optimal green light timings based on detected vehicles at intersections.
             </p>
             
-            {!flaskUrl && (
-              <Alert className="mb-6 bg-blue-50 border-blue-100 text-blue-800">
-                <Info className="h-4 w-4" />
-                <AlertDescription className="ml-2">
-                  Connect to your Flask backend by pasting the console output from Google Colab below.
-                </AlertDescription>
-                <Button 
-                  onClick={handlePaste} 
-                  variant="outline" 
-                  className="ml-4 bg-white hover:bg-gray-50"
-                >
-                  Paste from Clipboard
-                </Button>
-              </Alert>
+            {user && (
+              <>
+                <div className="flex justify-center items-center mb-6">
+                  <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
+                    <div>
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                    <div className={`px-2 py-1 rounded text-xs font-medium ${
+                      isAdmin ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {isAdmin ? 'Administrator' : 'Viewer'}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={logout}
+                      className="ml-2"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+                
+                {isAdmin && (
+                  <p className="text-sm bg-blue-50 text-blue-800 p-2 rounded mb-6">
+                    As an administrator, you have full access to modify traffic data.
+                  </p>
+                )}
+                
+                {!isAdmin && (
+                  <p className="text-sm bg-gray-50 text-gray-800 p-2 rounded mb-6">
+                    As a viewer, you can view traffic data but cannot modify it.
+                  </p>
+                )}
+              </>
             )}
             
             <div className="flex justify-center gap-4">
@@ -77,7 +78,13 @@ const GreenLightPage = () => {
             </div>
           </div>
           
-          <GreenLightCalculator initialApiUrl={flaskUrl ? `${flaskUrl}/upload` : undefined} />
+          {!user ? (
+            <div className="max-w-md mx-auto">
+              <LoginForm />
+            </div>
+          ) : (
+            <GreenLightCalculator isAdmin={isAdmin} />
+          )}
         </div>
       </main>
       <Footer />
