@@ -5,9 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent } from '@/components/ui/card';
-import { Trash, Upload } from 'lucide-react';
+import { Trash, Upload, Key, RefreshCw } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
 
-const TrafficSimulator = () => {
+interface TrafficSimulatorProps {
+  initialApiUrl?: string;
+}
+
+const TrafficSimulator = ({ initialApiUrl }: TrafficSimulatorProps) => {
   const [images, setImages] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [greenTimes, setGreenTimes] = useState<number[]>([0, 0, 0, 0]);
@@ -15,8 +20,16 @@ const TrafficSimulator = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const [apiUrl, setApiUrl] = useState<string>('https://e75e-34-106-114-213.ngrok-free.app/upload');
+  const [apiUrl, setApiUrl] = useState<string>(initialApiUrl || 'https://e75e-34-106-114-213.ngrok-free.app/upload');
+  const [apiKey, setApiKey] = useState<string>('your_secret_key_here'); // Default to match Flask server
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (initialApiUrl) {
+      setApiUrl(initialApiUrl);
+    }
+  }, [initialApiUrl]);
 
   // Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,6 +41,11 @@ const TrafficSimulator = () => {
 
     if (selectedFiles.length !== 4) {
       setError('Please select exactly 4 images.');
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please select exactly 4 images.",
+      });
       setImageFiles([]);
       setImages([]);
       return;
@@ -52,12 +70,22 @@ const TrafficSimulator = () => {
     setApiUrl(e.target.value);
   };
 
+  // Handle API Key change
+  const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setApiKey(e.target.value);
+  };
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (imageFiles.length !== 4) {
       setError('Please select exactly 4 images.');
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please select exactly 4 images.",
+      });
       return;
     }
 
@@ -74,12 +102,15 @@ const TrafficSimulator = () => {
     try {
       console.log(`Sending request to: ${apiUrl}`);
 
-      // Make POST request to Flask server
+      // Make POST request to Flask server with API key in headers
       const response = await axios.post(
         apiUrl,
         formData,
         {
           timeout: 120000, // 2 minute timeout for image processing
+          headers: {
+            'X-API-KEY': apiKey
+          }
         }
       );
 
@@ -93,12 +124,38 @@ const TrafficSimulator = () => {
         setGreenTimes(response.data.green_light_times);
         setVehicleData(response.data.vehicle_data);
         setSuccess(true);
+        toast({
+          title: "Success!",
+          description: "Traffic signal timings calculated.",
+        });
       } else {
         throw new Error('Invalid response format from server');
       }
     } catch (err: any) {
       console.error('Error processing images:', err);
-      setError(`Error: ${err.message}`);
+      let errorMessage = 'Error connecting to server';
+      
+      if (err.response) {
+        // The server responded with a status code outside the 2xx range
+        if (err.response.status === 401) {
+          errorMessage = 'Authentication failed: Invalid API key';
+        } else {
+          errorMessage = `Server error: ${err.response.data?.error || err.response.statusText}`;
+        }
+      } else if (err.request) {
+        // The request was made but no response was received
+        errorMessage = 'No response from server. Please check your connection and the server URL.';
+      } else {
+        // Something else caused the error
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+      toast({
+        variant: "destructive",
+        title: "Processing Error",
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -151,19 +208,43 @@ const TrafficSimulator = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-6">
-        <label htmlFor="apiUrl" className="block mb-2 font-medium">
-          Server URL:
-        </label>
-        <Input 
-          id="apiUrl" 
-          value={apiUrl} 
-          onChange={handleApiUrlChange} 
-          placeholder="Enter your ngrok URL here"
-          className="w-full"
-        />
-        <p className="mt-1 text-sm text-muted-foreground">
-          Enter the URL provided by ngrok when you start your Flask server
-        </p>
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <label htmlFor="apiUrl" className="block mb-2 font-medium">
+              Server URL:
+            </label>
+            <Input 
+              id="apiUrl" 
+              value={apiUrl} 
+              onChange={handleApiUrlChange} 
+              placeholder="Enter your ngrok URL here"
+              className="w-full"
+            />
+            <p className="mt-1 text-sm text-muted-foreground">
+              Enter the URL from your Flask server
+            </p>
+          </div>
+          
+          <div>
+            <label htmlFor="apiKey" className="block mb-2 font-medium">
+              API Key:
+            </label>
+            <div className="relative">
+              <Input 
+                id="apiKey" 
+                value={apiKey}
+                onChange={handleApiKeyChange}
+                placeholder="Enter the API key for authentication"
+                className="w-full"
+                type="password"
+              />
+              <Key className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              This should match the API_KEY in your Flask server
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Image Upload Form */}
@@ -209,8 +290,17 @@ const TrafficSimulator = () => {
               disabled={isLoading || imageFiles.length !== 4}
               className="flex-1"
             >
-              <Upload className="w-4 h-4 mr-2" />
-              {isLoading ? 'Processing...' : 'Calculate Signal Timings'}
+              {isLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Upload className="w-4 h-4 mr-2" />
+                  Calculate Signal Timings
+                </>
+              )}
             </Button>
 
             <Button 
@@ -275,7 +365,7 @@ const TrafficSimulator = () => {
           <div className="mt-6 text-sm text-center text-muted-foreground">
             <p>
               Green light timings are calculated based on detected vehicles.
-              Each vehicle adds 5 seconds to the base time (minimum 15s, maximum 60s).
+              Each vehicle adds proportional time to the cycle (minimum 15s, maximum 60s).
             </p>
           </div>
         </CardContent>
