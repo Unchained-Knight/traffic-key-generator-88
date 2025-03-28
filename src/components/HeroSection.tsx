@@ -164,10 +164,10 @@ const StatsCard = ({ icon, value, label, gradient, delay = 0 }: StatsCardProps) 
       className={cn(
         "relative rounded-xl overflow-hidden p-6 glass-panel transition-all duration-500 hover:scale-105 hover:shadow-lg",
         "before:absolute before:inset-0 before:opacity-20 before:bg-gradient-to-br",
-        `before:${gradient}`
+        `before:${gradient}`,
+        "animate-fade-up"
       )}
       style={{ animationDelay: `${800 + delay}ms` }}
-      className="animate-fade-up"
     >
       <div className="flex items-center gap-4">
         <div className="p-2.5 rounded-full bg-white dark:bg-gray-800 shadow-sm">
