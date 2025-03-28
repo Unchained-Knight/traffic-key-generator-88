@@ -1,16 +1,15 @@
 
 import React from 'react';
 import { 
-  BarChart3, 
+  RefreshCw, 
   Shield, 
-  Eye, 
+  BarChart3, 
   Zap, 
-  TrafficCone,
-  Car,
-  Clock,
-  Truck,
+  Globe, 
+  Lock,
+  Server,
   Gauge,
-  MapPin
+  Clock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,81 +18,81 @@ const Features = () => {
     <section className="py-20 relative overflow-hidden" id="features">
       {/* Background decoration */}
       <div 
-        className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl" 
+        className="absolute -bottom-24 -right-24 w-96 h-96 bg-accent/5 rounded-full blur-3xl" 
         aria-hidden="true"
       />
       
       <div className="container px-4 sm:px-6 relative">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 animate-fade-up">
-            AI-powered traffic management
+            Designed for developers, by developers
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-up [animation-delay:200ms]">
-            Our computer vision technology monitors traffic in real-time to optimize signal timing and improve traffic flow.
+            Our platform provides all the tools you need to manage traffic with precision and confidence.
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <FeatureCard 
-            icon={<Eye />}
-            title="Computer Vision Detection"
-            description="Advanced AI identifies and tracks vehicles, pedestrians, and cyclists with 99.8% accuracy."
-            color="primary"
+            icon={<Gauge />}
+            title="Real-time Monitoring"
+            description="Track traffic patterns, bottlenecks, and performance metrics with sub-second accuracy."
+            color="blue"
             delay={100}
           />
           <FeatureCard 
-            icon={<Gauge />}
-            title="Real-time Analysis"
-            description="Process traffic camera feeds to analyze vehicle density and traffic patterns instantly."
+            icon={<Shield />}
+            title="Advanced Security"
+            description="Protect your infrastructure with our state-of-the-art security protocols and DDoS protection."
             color="indigo"
             delay={200}
           />
           <FeatureCard 
             icon={<BarChart3 />}
-            title="Dynamic Signal Timing"
-            description="Automatically adjust green light durations based on current traffic conditions at each approach."
+            title="Detailed Analytics"
+            description="Gain insights into traffic patterns with comprehensive reporting and visualization tools."
             color="violet"
             delay={300}
           />
           <FeatureCard 
-            icon={<Car />}
-            title="Vehicle Classification"
-            description="Distinguish between cars, buses, and emergency vehicles to prioritize traffic accordingly."
+            icon={<Zap />}
+            title="High Performance"
+            description="Engineered for speed and reliability, with global CDN support for minimal latency."
             color="amber"
             delay={400}
           />
           <FeatureCard 
             icon={<Clock />}
-            title="Predictive Modeling"
-            description="Forecast traffic patterns based on historical data to prepare for rush hours and events."
+            title="Scheduled Operations"
+            description="Set up automated traffic rules and policies based on time, load, or custom triggers."
             color="green"
             delay={500}
           />
           <FeatureCard 
-            icon={<TrafficCone />}
-            title="Congestion Prevention"
-            description="Identify bottlenecks before they form and adjust signal timing to prevent traffic jams."
+            icon={<Globe />}
+            title="Global Infrastructure"
+            description="Leverage our worldwide network of servers for optimal performance everywhere."
             color="cyan"
             delay={600}
           />
           <FeatureCard 
-            icon={<Truck />}
-            title="Emergency Vehicle Priority"
-            description="Automatically detect emergency vehicles and provide green light corridors for faster response times."
+            icon={<Server />}
+            title="Edge Computing"
+            description="Process requests at the network edge for faster response times and reduced bandwidth."
             color="red"
             delay={700}
           />
           <FeatureCard 
-            icon={<Shield />}
-            title="Secure Implementation"
-            description="End-to-end encryption and secure API access ensure your traffic system remains protected."
+            icon={<Lock />}
+            title="Access Control"
+            description="Implement fine-grained access controls with role-based permissions and token authentication."
             color="purple"
             delay={800}
           />
           <FeatureCard 
-            icon={<MapPin />}
-            title="Intersection Mapping"
-            description="Create digital twins of intersections for optimal camera placement and signal coordination."
+            icon={<RefreshCw />}
+            title="Seamless Integration"
+            description="Easy integration with popular frameworks and platforms through our comprehensive SDKs."
             color="teal"
             delay={900}
           />
@@ -114,7 +113,6 @@ interface FeatureCardProps {
 const FeatureCard = ({ icon, title, description, color, delay }: FeatureCardProps) => {
   const getColorClasses = (color: string) => {
     const colorMap: Record<string, string> = {
-      primary: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary/90",
       blue: "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400",
       indigo: "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400",
       violet: "bg-violet-50 text-violet-600 dark:bg-violet-900/20 dark:text-violet-400",
@@ -126,7 +124,7 @@ const FeatureCard = ({ icon, title, description, color, delay }: FeatureCardProp
       teal: "bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-400",
     };
     
-    return colorMap[color] || colorMap.primary;
+    return colorMap[color] || colorMap.blue;
   };
   
   return (
