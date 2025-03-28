@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Car, BarChart3, FileText, Traffic, Gauge } from 'lucide-react';
+import { Car, BarChart3, FileText, Globe, Gauge, KeyRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const CustomNavbar = () => {
@@ -13,7 +13,7 @@ const CustomNavbar = () => {
       <div className="container flex h-16 items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl text-gray-800">
           <div className="relative">
-            <Traffic className="h-5 w-5 text-primary" />
+            <Globe className="h-5 w-5 text-primary" />
             <div className="absolute -inset-0.5 rounded-full bg-primary/20 animate-pulse-ring opacity-75"></div>
           </div>
           <span>AI Traffic Control</span>
@@ -48,7 +48,7 @@ const CustomNavbar = () => {
             to="/generator"
             active={location.pathname === "/generator"}
             label="API Keys"
-            icon={<Key className="h-4 w-4 mr-1.5" />}
+            icon={<KeyRound className="h-4 w-4 mr-1.5" />}
           />
         </nav>
       </div>
