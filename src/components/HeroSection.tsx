@@ -1,45 +1,30 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Car, BarChart3, Gauge, Zap } from 'lucide-react';
+import { ArrowRight, Car, BarChart3, Gauge, Zap, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 const HeroSection = () => {
-  const parallaxRef = useRef<HTMLDivElement>(null);
-  const parallaxElementsRef = useRef<NodeListOf<Element> | null>(null);
+  const [activeFeature, setActiveFeature] = useState(0);
+  const features = [
+    { icon: <Car className="w-6 h-6" />, title: "Vehicle Detection", description: "99.8% accurate vehicle detection with cutting-edge computer vision AI" },
+    { icon: <BarChart3 className="w-6 h-6" />, title: "Real-time Analytics", description: "Process and analyze traffic patterns as they develop" },
+    { icon: <Gauge className="w-6 h-6" />, title: "Adaptive Control", description: "Optimize signal timing based on actual traffic conditions" }
+  ];
   
+  // Feature rotation effect
   useEffect(() => {
-    // Initialize parallax elements
-    if (parallaxRef.current) {
-      parallaxElementsRef.current = parallaxRef.current.querySelectorAll('.parallax-element');
-    }
+    const interval = setInterval(() => {
+      setActiveFeature((prev) => (prev + 1) % features.length);
+    }, 3000);
     
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      
-      // Apply parallax effect to elements
-      if (parallaxElementsRef.current) {
-        parallaxElementsRef.current.forEach((el) => {
-          const htmlElement = el as HTMLElement;
-          const speed = parseFloat(htmlElement.dataset.speed || '0.1');
-          const direction = htmlElement.dataset.direction || 'up';
-          
-          let yPos;
-          if (direction === 'up') {
-            yPos = `-${scrollY * speed}px`;
-          } else {
-            yPos = `${scrollY * speed}px`;
-          }
-          
-          htmlElement.style.transform = `translate3d(0, ${yPos}, 0)`;
-        });
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Initial animation triggers for elements with fade-up class
+    return () => clearInterval(interval);
+  }, [features.length]);
+  
+  // Initial animation for elements with fade-up class
+  useEffect(() => {
     const animateElements = document.querySelectorAll('.animate-fade-up');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -53,34 +38,35 @@ const HeroSection = () => {
     animateElements.forEach(el => observer.observe(el));
     
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       animateElements.forEach(el => observer.unobserve(el));
     };
   }, []);
+
+  const handleDemoToast = () => {
+    toast({
+      title: "Demo Notification",
+      description: "This is a sample notification to demonstrate the toasts system",
+      variant: "default",
+    });
+  };
   
   return (
-    <div className="relative overflow-hidden pt-28 pb-20" ref={parallaxRef}>
+    <div className="relative overflow-hidden pt-28 pb-20">
       {/* Background gradient */}
       <div 
-        className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent dark:from-primary/10 dark:to-transparent -z-10 parallax-element"
-        data-speed="0.05"
-        data-direction="up"
+        className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent dark:from-primary/10 dark:to-transparent -z-10"
         aria-hidden="true"
       />
       
       {/* Animated grid background */}
       <div 
-        className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBzdHJva2U9IiMyMDJCNDAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIG9wYWNpdHk9Ii4xIj48cGF0aCBkPSJNMzAgNjBWME0wIDMwaDYwIi8+PC9nPjwvc3ZnPg==')]"
-        style={{ opacity: 0.07 }}
+        className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBzdHJva2U9IiMyMDJCNDAiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIG9wYWNpdHk9Ii4xIj48cGF0aCBkPSJNMzAgNjBWME0wIDMwaDYwIi8+PC9nPjwvc3ZnPg==')] opacity-[0.07]"
         aria-hidden="true"
-        className="parallax-element"
-        data-speed="0.1"
-        data-direction="down"
       />
       
       {/* Floating decorative elements */}
-      <div className="absolute top-40 left-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl -z-10 parallax-element" data-speed="0.2" data-direction="up" />
-      <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl -z-10 parallax-element" data-speed="0.15" data-direction="down" />
+      <div className="absolute top-40 left-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl -z-10 animate-float" />
+      <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl -z-10 animate-float" style={{ animationDelay: "2s" }} />
 
       <div className="container px-4 sm:px-6 relative">
         <div className="max-w-5xl mx-auto text-center">
@@ -88,16 +74,16 @@ const HeroSection = () => {
             className="inline-flex items-center justify-center px-3 py-1.5 mb-6 text-sm font-medium rounded-full bg-primary/10 text-primary animate-fade-in"
           >
             <span className="flex items-center">
-              <Zap className="w-3.5 h-3.5 mr-1.5" />
+              <Zap className="w-3.5 h-3.5 mr-1.5 animate-pulse-soft" />
               AI-powered traffic management
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up [animation-delay:200ms] text-balance parallax-element" data-speed="0.05" data-direction="up">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up [animation-delay:200ms] text-balance">
             Intelligent
             <span className="relative">
               <span className="relative z-10 px-2 whitespace-nowrap text-primary"> traffic control </span>
-              <span className="absolute bottom-2 left-0 right-0 h-3 bg-primary/20 -z-10 skew-x-3 parallax-element" data-speed="0.12" data-direction="up"></span>
+              <span className="absolute bottom-2 left-0 right-0 h-3 bg-primary/20 -z-10 skew-x-3"></span>
             </span>
             with AI vision
           </h1>
@@ -118,6 +104,49 @@ const HeroSection = () => {
                 API Documentation
               </Link>
             </Button>
+            <Button variant="secondary" size="lg" className="h-12 px-6 transition-all duration-300 hover:scale-105" onClick={handleDemoToast}>
+              Notification Demo
+            </Button>
+          </div>
+        </div>
+
+        {/* Feature Showcase */}
+        <div className="max-w-md mx-auto mb-16 glass-panel p-6 rounded-xl animate-fade-up [animation-delay:800ms]">
+          <div className="relative h-[120px] overflow-hidden">
+            {features.map((feature, index) => (
+              <div 
+                key={index}
+                className={cn(
+                  "absolute inset-0 transition-all duration-500 flex items-start gap-4",
+                  index === activeFeature 
+                    ? "opacity-100 translate-x-0" 
+                    : index < activeFeature 
+                      ? "opacity-0 -translate-x-full" 
+                      : "opacity-0 translate-x-full"
+                )}
+              >
+                <div className="p-3 rounded-full bg-primary/10 text-primary flex-shrink-0">
+                  {feature.icon}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-1">{feature.title}</h3>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center gap-2 mt-4">
+            {features.map((_, index) => (
+              <button
+                key={index}
+                className={cn(
+                  "w-2 h-2 rounded-full transition-all duration-300",
+                  index === activeFeature ? "bg-primary w-6" : "bg-gray-300 dark:bg-gray-700"
+                )}
+                onClick={() => setActiveFeature(index)}
+                aria-label={`View feature ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
 
@@ -144,6 +173,30 @@ const HeroSection = () => {
             gradient="from-amber-500/20 to-amber-600/5"
             delay={400}
           />
+        </div>
+
+        {/* Key Benefits */}
+        <div className="mt-20 max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 animate-fade-up">Key Benefits</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              "Reduce traffic congestion by up to 32%",
+              "Decrease fuel consumption and emissions",
+              "Improve emergency response times",
+              "Enhance pedestrian and cyclist safety",
+              "Lower maintenance costs for infrastructure",
+              "Generate detailed traffic analytics"
+            ].map((benefit, index) => (
+              <div 
+                key={index} 
+                className="flex items-start gap-3 p-4 rounded-lg bg-white/5 dark:bg-gray-800/20 border border-gray-200/20 dark:border-gray-700/20 animate-fade-up"
+                style={{ animationDelay: `${index * 100 + 1000}ms` }}
+              >
+                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                <p className="text-base">{benefit}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
