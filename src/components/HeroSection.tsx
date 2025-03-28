@@ -167,7 +167,7 @@ const StatsCard = ({ icon, value, label, gradient, delay = 0 }: StatsCardProps) 
         `before:${gradient}`
       )}
       style={{ animationDelay: `${800 + delay}ms` }}
-      data-aos="fade-up"
+      className="animate-fade-up"
     >
       <div className="flex items-center gap-4">
         <div className="p-2.5 rounded-full bg-white dark:bg-gray-800 shadow-sm">
