@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Globe, LineChart, Shield, Zap } from 'lucide-react';
+import { ArrowRight, Car, BarChart3, Gauge, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const HeroSection = () => {
@@ -10,7 +10,7 @@ const HeroSection = () => {
     <div className="relative overflow-hidden pt-28 pb-20">
       {/* Background gradient */}
       <div 
-        className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-950/20 dark:to-transparent -z-10" 
+        className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent dark:from-primary/10 dark:to-transparent -z-10" 
         aria-hidden="true"
       />
       
@@ -23,35 +23,36 @@ const HeroSection = () => {
 
       <div className="container px-4 sm:px-6 relative">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center justify-center px-3 py-1.5 mb-6 text-sm font-medium rounded-full bg-accent/10 text-accent animate-fade-in">
+          <div className="inline-flex items-center justify-center px-3 py-1.5 mb-6 text-sm font-medium rounded-full bg-primary/10 text-primary animate-fade-in">
             <span className="flex items-center">
               <Zap className="w-3.5 h-3.5 mr-1.5" />
-              Traffic management made simple
+              AI-powered traffic management
             </span>
           </div>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 animate-fade-up [animation-delay:200ms] text-balance">
-            The modern API for
+            Intelligent
             <span className="relative">
-              <span className="relative z-10 px-2 whitespace-nowrap">traffic management</span>
-              <span className="absolute bottom-2 left-0 right-0 h-3 bg-accent/20 -z-10 skew-x-3"></span>
+              <span className="relative z-10 px-2 whitespace-nowrap text-primary"> traffic control </span>
+              <span className="absolute bottom-2 left-0 right-0 h-3 bg-primary/20 -z-10 skew-x-3"></span>
             </span>
+            with AI vision
           </h1>
 
           <p className="text-xl text-muted-foreground mx-auto max-w-2xl mb-8 animate-fade-up [animation-delay:400ms] text-balance">
-            Our powerful API provides developers with the tools they need to monitor, manage, and optimize traffic flow across their applications.
+            Our advanced computer vision AI identifies vehicles at intersections and optimizes traffic signal timing for maximum flow efficiency and reduced congestion.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4 mb-16 animate-fade-up [animation-delay:600ms]">
             <Button asChild size="lg" className="h-12 px-6">
-              <Link to="/generator">
-                Get your API key
+              <Link to="/simulator">
+                Try the simulator
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="h-12 px-6">
               <Link to="/docs">
-                Read the docs
+                API Documentation
               </Link>
             </Button>
           </div>
@@ -60,22 +61,22 @@ const HeroSection = () => {
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto animate-fade-up [animation-delay:800ms]">
           <StatsCard 
-            icon={<Globe className="w-5 h-5 text-blue-500" />}
-            value="99.99%"
-            label="Global uptime"
-            gradient="from-blue-500/20 to-blue-600/5"
+            icon={<Car className="w-5 h-5 text-primary" />}
+            value="99.8%"
+            label="Vehicle detection accuracy"
+            gradient="from-primary/20 to-primary/5"
           />
           <StatsCard 
-            icon={<LineChart className="w-5 h-5 text-green-500" />}
-            value="500ms"
-            label="Average latency"
+            icon={<BarChart3 className="w-5 h-5 text-green-500" />}
+            value="32%"
+            label="Congestion reduction"
             gradient="from-green-500/20 to-green-600/5"
           />
           <StatsCard 
-            icon={<Shield className="w-5 h-5 text-purple-500" />}
-            value="100%"
-            label="Request security"
-            gradient="from-purple-500/20 to-purple-600/5"
+            icon={<Gauge className="w-5 h-5 text-amber-500" />}
+            value="45%"
+            label="Faster travel times"
+            gradient="from-amber-500/20 to-amber-600/5"
           />
         </div>
       </div>
