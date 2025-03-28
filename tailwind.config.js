@@ -76,16 +76,70 @@ module.exports = {
             transform: "translateY(0)"
           }
         },
+        "fade-down": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(-10px)"
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)"
+          }
+        },
         "fade-in": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" }
         },
+        "pulse-soft": {
+          "0%, 100%": {
+            opacity: "1"
+          },
+          "50%": {
+            opacity: "0.7"
+          }
+        },
+        "float": {
+          "0%, 100%": {
+            transform: "translateY(0)"
+          },
+          "50%": {
+            transform: "translateY(-10px)"
+          }
+        },
+        "pulse-ring": {
+          "0%": {
+            transform: "scale(0.8)",
+            opacity: "0.8"
+          },
+          "50%": {
+            opacity: "0.4"
+          },
+          "100%": {
+            transform: "scale(1.4)",
+            opacity: "0"
+          }
+        },
+        "scale-up": {
+          "0%": {
+            transform: "scale(0.95)",
+            opacity: "0"
+          },
+          "100%": {
+            transform: "scale(1)",
+            opacity: "1"
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-up": "fade-up 0.5s ease-out forwards",
+        "fade-down": "fade-down 0.5s ease-out forwards",
         "fade-in": "fade-in 0.5s ease-out forwards",
+        "pulse-soft": "pulse-soft 3s infinite ease-in-out",
+        "float": "float 6s ease-in-out infinite",
+        "pulse-ring": "pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "scale-up": "scale-up 0.4s ease-out forwards",
       },
     },
   },
